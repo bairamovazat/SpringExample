@@ -23,34 +23,41 @@ public class RegistrationServiceImpl implements RegistrationService {
     private JavaMailSender javaMailSender;
 
     @Autowired
-    private  UserRepository userRepository;
+    private UserRepository userRepository;
 
     @Override
-    public void registration(UserForm userForm) {
+    public void registrationAndSendConfirmMail(UserForm userForm) throws MessagingException {
         User user = User.builder()
                 .name(userForm.getName())
                 .login(userForm.getLogin())
                 .hashPassword(encoder.encode(userForm.getPassword()))
                 .email(userForm.getEmail())
                 .uuid(UUID.randomUUID())
+                .status("NOT_CONFIRMED")
                 .build();
         userRepository.save(user);
 
-        String text = "hello";
+        String text = "Здравствуйте! Пожалуйста перейдите по ссылке, чтобы закончить регистрацию в нашем чате. "
+                + "http://localhost:8080/confirm/"
+                + user.getUuid().toString();
         String email = user.getEmail();
-
-
         MimeMessage message = javaMailSender.createMimeMessage();
-        try {
-            message.setContent(text, "text/html");
-            MimeMessageHelper messageHelper = new MimeMessageHelper(message, true);
-            messageHelper.setTo(email);
-            messageHelper.setSubject("Подвтерждение регистрации в чате");
-            messageHelper.setText("http://localhost:8080/confirm/" + user.getUuid().toString(), true);
-        } catch (MessagingException e) {
-            throw new IllegalArgumentException(e);
-        }
+        message.setContent(text, "text/html");
+        MimeMessageHelper messageHelper = new MimeMessageHelper(message, true);
+        messageHelper.setTo(email);
+        messageHelper.setSubject("Подвтерждение регистрации в чате");
+        messageHelper.setText(text + "Где я ?", true);
 
         javaMailSender.send(message);
+    }
+
+    @Override
+    public void confirmUser(String id){
+        UUID uuid = UUID.fromString(id);
+        User user = userRepository.findOneByUuid(uuid);
+        user.setStatus("CONFIRMED");
+        if(user!=null) {
+            userRepository.save(user);
+        }
     }
 }
