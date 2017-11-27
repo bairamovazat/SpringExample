@@ -5,6 +5,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Table(name = "chat_user")
@@ -24,4 +25,7 @@ public class User {
     private String hashPassword;
     @ManyToMany(mappedBy = "users", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Chat> chats;
+    private String email;
+    private UUID uuid;
+
 }
