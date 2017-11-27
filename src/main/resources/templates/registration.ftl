@@ -1,7 +1,7 @@
 <#ftl encoding = 'UTF-8'>
 <#import "spring.ftl" as spring/>
 <body>
-<form action="/users" method="post">
+<form action="/registration" method="post">
     Name:
     <input type="text" name="name">
     <br>

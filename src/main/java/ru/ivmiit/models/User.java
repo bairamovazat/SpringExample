@@ -27,5 +27,6 @@ public class User {
     private List<Chat> chats;
     private String email;
     private UUID uuid;
+    private String status;
 
 }
