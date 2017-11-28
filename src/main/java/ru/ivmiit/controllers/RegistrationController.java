@@ -25,6 +25,7 @@ public class RegistrationController {
     public String registerUser(@ModelAttribute UserForm userForm){
         try {
             registrationService.registrationAndSendConfirmMail(userForm);
+            registrationService.sendSmsToUser(userForm.getPhone(), "Вы зарегестрированы в нашем чате " + userForm.getName());
         } catch (MessagingException e) {
             e.printStackTrace();
         }
