@@ -1,11 +1,13 @@
 package ru.ivmiit.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 import ru.ivmiit.forms.UserForm;
 import ru.ivmiit.models.User;
 import ru.ivmiit.repository.UserRepository;
@@ -34,6 +36,7 @@ public class RegistrationServiceImpl implements RegistrationService {
                 .email(userForm.getEmail())
                 .uuid(UUID.randomUUID())
                 .status("NOT_CONFIRMED")
+                .phone(userForm.getPhone())
                 .build();
         userRepository.save(user);
 
@@ -60,4 +63,25 @@ public class RegistrationServiceImpl implements RegistrationService {
             userRepository.save(user);
         }
     }
+
+    @Override
+    public String sendSmsToUser(String phone, String text) {
+        String login = "bairamovazat@gmail.com";
+        String passwordMD5 = "2508c2f61f27a3deb80aeb092398fa8a";
+        String to = phone;
+        String from = "biznes";
+        String type = "7";
+
+        String request = "https://gate.smsaero.ru/send/?user=" + login +
+                "&password=" + passwordMD5 +
+                "&to=" + to +
+                "&text=" + text +
+                "&from=" + from +
+                "&type=" + type;
+
+        RestTemplate template = new RestTemplate();
+        ResponseEntity<String> responseEntity = template.getForEntity(request, String.class);
+        return responseEntity.toString();
+    }
+
 }

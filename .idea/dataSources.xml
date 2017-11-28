@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
-    <data-source source="LOCAL" name="database@localhost" uuid="4f6da840-d527-4f46-be74-1a78dc55a131">
+    <data-source source="LOCAL" name="database_2@localhost" uuid="41a294ae-87b1-4e97-b4f5-ecec5c110a19">
       <driver-ref>postgresql</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>org.postgresql.Driver</jdbc-driver>
-      <jdbc-url>jdbc:postgresql://localhost:5432/database</jdbc-url>
+      <jdbc-url>jdbc:postgresql://localhost:5432/database_2</jdbc-url>
       <driver-properties>
         <property name="ApplicationName" value="DataGrip" />
       </driver-properties>

@@ -28,5 +28,6 @@ public class User {
     private String email;
     private UUID uuid;
     private String status;
+    private String phone;
 
 }
