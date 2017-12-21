@@ -1,11 +1,14 @@
 package ru.ivmiit.services;
 
-import ru.ivmiit.forms.UserForm;
+import ru.ivmiit.forms.UserRegistrationForm;
 
-import javax.mail.MessagingException;
-
+/**
+ * 10.11.2017
+ * RegistrationService
+ *
+ * @author Sidikov Marsel (First Software Engineering Platform)
+ * @version v1.0
+ */
 public interface RegistrationService {
-    void registrationAndSendConfirmMail(UserForm userForm) throws MessagingException;
-    void confirmUser(String uuid) throws IllegalArgumentException;
-    String sendSmsToUser(String phone, String text);
+    void register(UserRegistrationForm userForm);
 }

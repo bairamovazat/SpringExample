@@ -15,9 +15,9 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
  * @author Sidikov Marsel (First Software Engineering Platform)
  * @version v1.0
  */
-@SpringBootApplication(exclude = {SecurityAutoConfiguration.class})
+@SpringBootApplication
 @ComponentScan("ru.ivmiit")
-@EnableJpaRepositories(basePackages = "ru.ivmiit.repository")
+@EnableJpaRepositories(basePackages = "ru.ivmiit.repositories")
 @EntityScan(basePackages = "ru.ivmiit.models", basePackageClasses = Jsr310JpaConverters.class)
 public class Application {
     public static void main(String[] args) {

@@ -19,7 +19,7 @@ public class File {
     private Long id;
 
     private String name;
-    private String StorageFileName;
+    private String storageFileName;
     private String url;
     private Long size;
     private String type;

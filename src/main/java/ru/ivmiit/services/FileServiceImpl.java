@@ -8,7 +8,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import ru.ivmiit.models.File;
-import ru.ivmiit.repository.FilesRepository;
+import ru.ivmiit.repositories.FilesRepository;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.FileInputStream;
