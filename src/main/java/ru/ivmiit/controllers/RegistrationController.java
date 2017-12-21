@@ -2,54 +2,70 @@ package ru.ivmiit.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
-import ru.ivmiit.forms.UserForm;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import ru.ivmiit.forms.UserRegistrationForm;
+import ru.ivmiit.models.User;
+import ru.ivmiit.repositories.UsersRepository;
+import ru.ivmiit.security.states.State;
 import ru.ivmiit.services.RegistrationService;
+import ru.ivmiit.validators.UserRegistrationFormValidator;
 
-import javax.mail.MessagingException;
+import javax.validation.Valid;
+import java.util.Optional;
+import java.util.UUID;
 
-
+/**
+ * 10.11.2017
+ * RegistrationController
+ *
+ * @author Sidikov Marsel (First Software Engineering Platform)
+ * @version v1.0
+ */
 @Controller
 public class RegistrationController {
 
     @Autowired
-    private RegistrationService registrationService;
+    private RegistrationService service;
 
+    @Autowired
+    private UserRegistrationFormValidator userRegistrationFormValidator;
 
-    @GetMapping(value = "/registration")
-    public String registerPage(){
-        return "registration";
+    @Autowired
+    private UsersRepository usersRepository;
+
+    @InitBinder("userForm")
+    public void initUserFormValidator(WebDataBinder binder) {
+        binder.addValidators(userRegistrationFormValidator);
     }
 
-    @PostMapping(value = "/registration")
-    public String registerUser(@ModelAttribute UserForm userForm){
-        try {
-            registrationService.registrationAndSendConfirmMail(userForm);
-            registrationService.sendSmsToUser(userForm.getPhone(), "Вы зарегестрированы в нашем чате " + userForm.getName());
-        } catch (MessagingException e) {
-            e.printStackTrace();
+    @GetMapping(value = "/confirm/{file-name}")
+    public String confirmEmail(@PathVariable("file-name") String fileName, RedirectAttributes attributes) {
+        Optional<User> optionalUser = usersRepository.findByUuid(UUID.fromString(fileName));
+        if(optionalUser.isPresent()){
+            User user = optionalUser.get();
+            user.setState(State.CONFIRMED);
+            usersRepository.save(user);
+            attributes.addFlashAttribute("error", "Пользователь подтверждён");
         }
-        return "registration_success";
+        return "redirect:/login";
     }
 
-    @GetMapping(value = "/confirm/{uuid}" )
-    public String confirmAccount(@PathVariable String uuid){
-        registrationService.confirmUser(uuid);
-        return "confirm_success";
+    @PostMapping(value = "/signUp")
+    public String signUp(@Valid @ModelAttribute("userForm") UserRegistrationForm userRegistrationForm,
+                         BindingResult errors, RedirectAttributes attributes) {
+        if (errors.hasErrors()) {
+            attributes.addFlashAttribute("error", errors.getAllErrors().get(0).getDefaultMessage());
+            return "redirect:/signUp";
+        }
+        service.register(userRegistrationForm);
+        return "success_registration";
     }
 
-//    @GetMapping(value = "/success")
-//    public static String getSuccessPage(){
-//        return "success";
-//    }
-
-//    @GetMapping(value = "login")
-//    public static String getLoginPage(){
-//        return "login";
-//    }
-//
-//    @PostMapping(value = "login")
-//    public static String login(){
-//        return "login";
-//    }
+    @GetMapping(value = "/signUp")
+    public String getSignUpPage() {
+        return "sign_up";
+    }
 }
